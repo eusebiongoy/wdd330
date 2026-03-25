@@ -1,5 +1,4 @@
-// productDetails.mjs
-
+// src/js/ProductDetails.mjs
 import { getLocalStorage, setLocalStorage, getParam } from "./utils.mjs";
 
 export default class ProductDetails {
@@ -9,16 +8,11 @@ export default class ProductDetails {
     this.product = {};
   }
 
-  // Initialize product details
   async init() {
     try {
-      // Fetch product data from the data source
       this.product = await this.dataSource.findProductById(this.productId);
-
-      // Render product details in the DOM
       this.renderProductDetails();
 
-      // Add "Add to Cart" event listener
       const addBtn = document.getElementById("addToCart");
       if (addBtn) {
         addBtn.addEventListener("click", this.addProductToCart.bind(this));
@@ -28,7 +22,6 @@ export default class ProductDetails {
     }
   }
 
-  // Add product to local storage cart
   addProductToCart() {
     const cartItems = getLocalStorage("so-cart") || [];
     cartItems.push(this.product);
@@ -36,7 +29,6 @@ export default class ProductDetails {
     console.log(`${this.product.NameWithoutBrand} added to cart.`);
   }
 
-  // Render product details in the DOM
   renderProductDetails() {
     const product = this.product;
     if (!product) return;

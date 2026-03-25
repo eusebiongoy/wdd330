@@ -1,13 +1,20 @@
-// main.js
-import { ProductList } from './ProductList.mjs';
-import { ProductDetails } from './ProductDetails.mjs';
-import { utils } from './utils.mjs';
+// src/js/main.js
+import ProductList from './ProductList.mjs';
+import ProductDetails from './ProductDetails.mjs';
+import { getLocalStorage, setLocalStorage, getParam } from './utils.mjs';
 
-// Grab the HTML element where products will be displayed
-const tentsContainer = document.getElementById('tentsList');
+// Example usage:
 
-// Create an instance of ProductList
-const tentsList = new ProductList('tents', ProductData, tentsContainer);
+// 1. Product Details page
+const productId = getParam("id"); // get product id from URL
+if (productId) {
+  const details = new ProductDetails(productId, window.ProductDataSource);
+  details.init();
+}
 
-// Initialize the list to fetch and render products
-tentsList.init();
+// 2. Product List page
+if (document.getElementById("productListContainer")) {
+  const products = window.ProductDataSource.getAllProducts();
+  const list = new ProductList(products);
+  list.render("productListContainer");
+}
