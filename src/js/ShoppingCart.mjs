@@ -1,64 +1,43 @@
-// ShoppingCart.mjs
+import { getLocalStorage } from "./utils.mjs";
+
+function cartItemTemplate(item) {
+  const newItem = `<li class="cart-card divider">
+  <a href="#" class="cart-card__image">
+    <img
+      src="${item.Images.PrimaryMedium}"
+      alt="${item.Name}"
+    />
+  </a>
+  <a href="#">
+    <h2 class="card__name">${item.Name}</h2>
+  </a>
+  <p class="cart-card__color">${item.Colors[0].ColorName}</p>
+  <p class="cart-card__quantity">qty: 1</p>
+  <p class="cart-card__price">$${item.FinalPrice}</p>
+</li>`;
+
+  return newItem;
+}
 
 export default class ShoppingCart {
-  constructor(container, cart = []) {
-    this.container = container;
-    this.cart = cart;
+  constructor(key, parentSelector) {
+    this.key = key;
+    this.parentSelector = parentSelector;
+    this.total = 0;
   }
-
-  // Template for a single cart item
-  cartItemTemplate(item) {
-    return `
-      <div class="cart-item">
-        <h3>${item.name}</h3>
-        <p>Price: $${item.price}</p>
-        <p>Quantity: ${item.quantity}</p>
-        <p>Total: $${item.price * item.quantity}</p>
-      </div>
-    `;
+  async init() {
+    const list = getLocalStorage(this.key);
+    this.calculateListTotal(list);
+    this.renderCartContents(list);
   }
-
-  // Template for the whole cart
-  cartTemplate() {
-    if (this.cart.length === 0) {
-      return `<p>Your cart is empty.</p>`;
-    }
-
-    return `
-      <div class="shopping-cart">
-        ${this.cart.map(item => this.cartItemTemplate(item)).join("")}
-        <hr />
-        <h2>Total: $${this.calculateTotal()}</h2>
-      </div>
-    `;
+  calculateListTotal(list) {
+    const amounts = list.map((item) => item.FinalPrice);
+    this.total = amounts.reduce((sum, item) => sum + item);
   }
-
-  // Calculate total price
-  calculateTotal() {
-    return this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  }
-
-  // Render cart to DOM
-  render() {
-    this.container.innerHTML = this.cartTemplate();
-  }
-
-  // Optional: add item
-  addItem(item) {
-    const existing = this.cart.find(p => p.id === item.id);
-
-    if (existing) {
-      existing.quantity += item.quantity;
-    } else {
-      this.cart.push(item);
-    }
-
-    this.render();
-  }
-
-  // Optional: remove item
-  removeItem(id) {
-    this.cart = this.cart.filter(item => item.id !== id);
-    this.render();
+  renderCartContents() {
+    const cartItems = getLocalStorage(this.key);
+    const htmlItems = cartItems.map((item) => cartItemTemplate(item));
+    document.querySelector(this.parentSelector).innerHTML = htmlItems.join("");
+    document.querySelector(".list-total").innerText += ` $${this.total}`;
   }
 }
