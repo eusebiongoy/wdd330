@@ -1,4 +1,4 @@
-import { loadHeaderFooter } from "./utils.mjs";
+import { loadHeaderFooter, alertMessage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
 
 loadHeaderFooter();
@@ -9,17 +9,36 @@ myCheckout.init();
 document
   .querySelector("#zip")
   .addEventListener("blur", myCheckout.calculateOrdertotal.bind(myCheckout));
-// listening for click on the button
-document.querySelector("#checkoutSubmit").addEventListener("click", (e) => {
+
+// Listening for click on the button
+document.querySelector("#checkoutSubmit").addEventListener("click", async (e) => {
   e.preventDefault();
 
-  myCheckout.checkout();
+  const myForm = document.forms[0]; // assumes checkout form is the first form
+  const isValid = myForm.checkValidity();
+  myForm.reportValidity();
+  if (!isValid) return; // stop if HTML5 validation fails
+
+  try {
+    const result = await myCheckout.checkout();
+
+    if (result?.error) {
+      // handle error from checkout
+      alertMessage(`Checkout failed: ${result.message}`);
+    } else {
+      // success path
+      localStorage.removeItem("so-cart"); // clear the cart
+      window.location.href = "./success.html"; // redirect to success page
+    }
+  } catch (err) {
+    // unexpected errors
+    alertMessage(`Unexpected error: ${err.message || err}`);
+  }
 });
 
-// this is how it would look if we listen for the submit on the form
+// Previously commented submit listener remains for reference
 // document.forms['checkout']
 // .addEventListener('submit', (e) => {
 //   e.preventDefault();
-//   // e.target would contain our form in this case
-//    myCheckout.checkout();
+//   myCheckout.checkout();
 // });
