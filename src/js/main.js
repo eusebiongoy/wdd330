@@ -1,7 +1,7 @@
 // src/js/main.js
-import ProductList from './ProductList.mjs';
-import ProductDetails from './ProductDetails.mjs';
-import { getLocalStorage, setLocalStorage, getParam } from './utils.mjs';
+import ProductList from "./ProductList.mjs";
+import ProductDetails from "./ProductDetails.mjs";
+import { getParam } from "./utils.mjs";
 
 // Example usage:
 
