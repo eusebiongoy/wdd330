@@ -4,8 +4,6 @@ import ExternalServices from "./ExternalServices.mjs";
 const services = new ExternalServices();
 
 function formDataToJSON(formElement) {
-  
-  
   const formData = new FormData(formElement);
   const convertedJSON = {};
   formData.forEach((value, key) => {
@@ -15,16 +13,12 @@ function formDataToJSON(formElement) {
 }
 
 function packageItems(items) {
-  const simplifiedItems = items.map((item) => {
-    console.log(item);
-    return {
-      id: item.Id,
-      price: item.FinalPrice,
-      name: item.Name,
-      quantity: 1,
-    };
-  });
-  return simplifiedItems;
+  return items.map((item) => ({
+    id: item.Id,
+    price: parseFloat(item.FinalPrice) || 0,
+    name: item.Name,
+    quantity: 1,
+  }));
 }
 
 export default class CheckoutProcess {
@@ -39,51 +33,77 @@ export default class CheckoutProcess {
   }
 
   init() {
-    this.list = getLocalStorage(this.key);
+    this.list = getLocalStorage(this.key) || [];
     this.calculateItemSummary();
   }
 
   calculateItemSummary() {
-    // calculate and display the total amount of the items in the cart, and the number of items.
     const summaryElement = document.querySelector(
-      this.outputSelector + " #cartTotal"
+      `${this.outputSelector} #cartTotal`
     );
     const itemNumElement = document.querySelector(
-      this.outputSelector + " #num-items"
+      `${this.outputSelector} #num-items`
     );
-    itemNumElement.innerText = this.list.length;
-    // calculate the total of all the items in the cart
-    const amounts = this.list.map((item) => item.FinalPrice);
-    this.itemTotal = amounts.reduce((sum, item) => sum + item);
-    summaryElement.innerText = `$${this.itemTotal}`;;
+
+    if (itemNumElement) {
+      itemNumElement.innerText = this.list.length;
+    }
+
+    const amounts = this.list.map(
+      (item) => parseFloat(item.FinalPrice) || 0
+    );
+
+    this.itemTotal = amounts.reduce((sum, item) => sum + item, 0);
+
+    if (summaryElement) {
+      summaryElement.innerText = `$${this.itemTotal.toFixed(2)}`;
+    }
   }
 
   calculateOrderTotal() {
-    // calculate the shipping and tax amounts. Then use them to along with the cart total to figure out the order total
-    this.tax = (this.itemTotal * .06);
-    this.shipping = 10 + (this.list.length - 1) * 2;
-    this.orderTotal = (
-      parseFloat(this.itemTotal) +
-      parseFloat(this.tax) +
-      parseFloat(this.shipping)
-    )
-    // display the totals.
+    this.tax = this.itemTotal * 0.06;
+
+    this.shipping =
+      this.list.length > 0
+        ? 10 + (this.list.length - 1) * 2
+        : 0;
+
+    this.orderTotal =
+      this.itemTotal + this.tax + this.shipping;
+
     this.displayOrderTotals();
   }
 
   displayOrderTotals() {
-    // once the totals are all calculated display them in the order summary page
-    const tax = document.querySelector(`${this.outputSelector} #tax`);
-    const shipping = document.querySelector(`${this.outputSelector} #shipping`);
-    const orderTotal = document.querySelector(`${this.outputSelector} #orderTotal`);
+    const taxEl = document.querySelector(
+      `${this.outputSelector} #tax`
+    );
+    const shippingEl = document.querySelector(
+      `${this.outputSelector} #shipping`
+    );
+    const totalEl = document.querySelector(
+      `${this.outputSelector} #orderTotal`
+    );
 
-    tax.innerText = `$${this.tax.toFixed(2)}`;
-    shipping.innerText = `$${this.shipping.toFixed(2)}`;
-    orderTotal.innerText = `$${this.orderTotal.toFixed(2)}`;
+    if (taxEl) taxEl.innerText = `$${this.tax.toFixed(2)}`;
+    if (shippingEl)
+      shippingEl.innerText = `$${this.shipping.toFixed(2)}`;
+    if (totalEl)
+      totalEl.innerText = `$${this.orderTotal.toFixed(2)}`;
   }
 
   async checkout() {
+    if (!this.list.length) {
+      console.error("Cart is empty");
+      return;
+    }
+
     const formElement = document.forms["checkout"];
+    if (!formElement) {
+      console.error("Checkout form not found");
+      return;
+    }
+
     const order = formDataToJSON(formElement);
 
     order.orderDate = new Date().toISOString();
@@ -91,13 +111,12 @@ export default class CheckoutProcess {
     order.tax = this.tax;
     order.shipping = this.shipping;
     order.items = packageItems(this.list);
-    //console.log(order);
 
     try {
       const response = await services.checkout(order);
-      console.log(response);
+      console.log("Checkout successful:", response);
     } catch (err) {
-      console.log(err);
+      console.error("Checkout failed:", err);
     }
   }
 }
