@@ -1,10 +1,10 @@
 // src/js/product.js
 import { getParam } from "./utils.mjs";
-import ProductData from "./ProductData.mjs";
+import ExternalServices from "./ExternalServices.mjs";
 import ProductDetails from "./ProductDetails.mjs";
 
 // Create data source for tents category
-const dataSource = new ProductData("tents");
+const dataSource = new ExternalServices("tents");
 
 // Get product ID from URL query param
 const productID = getParam("product");
