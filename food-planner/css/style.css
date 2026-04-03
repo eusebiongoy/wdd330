@@ -1,0 +1,51 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #F9F9F9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+header input[type="search"] {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    width: 50%;
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 1rem;
+}
+
+section {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
+    padding: 1rem;
+    flex: 1 1 300px;
+    min-width: 280px;
+}
+
+#planner-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.planner-day {
+    background-color: #FF9800;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    border-radius: 4px;
+}
