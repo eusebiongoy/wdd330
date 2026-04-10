@@ -1,16 +1,14 @@
-export function renderPlanner() {
-    const plannerGrid = document.getElementById('planner-grid');
-    const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+import { savePlanner, loadPlanner } from "./storage.js";
 
-    plannerGrid.innerHTML = '';
-    days.forEach(day => {
-        const dayCell = document.createElement('div');
-        dayCell.className = 'planner-day';
-        dayCell.textContent = day;
-        plannerGrid.appendChild(dayCell);
-    });
+let planner = loadPlanner();
+
+export function addToPlanner(day, recipe) {
+    if (!planner[day]) planner[day] = [];
+
+    planner[day].push(recipe.title);
+    savePlanner(planner);
 }
 
-export function renderPlanner() {
-    console.log("Render weekly planner");
+export function getPlanner() {
+    return planner;
 }

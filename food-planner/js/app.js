@@ -1,14 +1,13 @@
-// Entry point
-import { searchRecipes } from './api.js';
-import { renderPlanner } from './planner.js';
-import { renderGroceryList } from './grocery.js';
+import { searchRecipes } from "./api.js";
+import { renderRecipes } from "./ui.js";
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderPlanner();
-    renderGroceryList();
+const input = document.getElementById("recipe-search");
 
-    const searchInput = document.getElementById('recipe-search');
-    searchInput.addEventListener('input', (e) => {
-        searchRecipes(e.target.value);
-    });
+input.addEventListener("input", async (e) => {
+    const query = e.target.value;
+
+    if (query.length < 2) return;
+
+    const recipes = await searchRecipes(query);
+    renderRecipes(recipes);
 });

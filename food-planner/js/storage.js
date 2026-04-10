@@ -1,5 +1,15 @@
+export function savePlanner(data) {
+    localStorage.setItem("planner", JSON.stringify(data));
+}
 
+export function loadPlanner() {
+    return JSON.parse(localStorage.getItem("planner")) || {};
+}
 
-// For now, just empty functions
-export function saveData() {}
-export function loadData() {}
+export function saveGrocery(data) {
+    localStorage.setItem("grocery", JSON.stringify(data));
+}
+
+export function loadGrocery() {
+    return JSON.parse(localStorage.getItem("grocery")) || [];
+}
