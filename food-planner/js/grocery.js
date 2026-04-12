@@ -2,9 +2,9 @@ import { loadGrocery, saveGrocery } from "./storage.js";
 
 let grocery = loadGrocery() || [];
 
-/**
- * Add item to grocery (no duplicates)
- */
+// =====================
+// ADD ITEM
+// =====================
 export function addToGrocery(item) {
     if (!item) return;
 
@@ -14,38 +14,42 @@ export function addToGrocery(item) {
     }
 }
 
-/**
- * Get grocery list
- */
+// =====================
+// GET LIST
+// =====================
 export function getGrocery() {
     return grocery;
 }
 
-/**
- * Remove item
- */
+// =====================
+// REMOVE ITEM
+// =====================
 export function removeFromGrocery(item) {
     grocery = grocery.filter(i => i !== item);
     saveGrocery(grocery);
 }
 
-/**
- * Clear list
- */
+// =====================
+// CLEAR LIST
+// =====================
 export function clearGrocery() {
     grocery = [];
     saveGrocery(grocery);
 }
 
-/**
- * Generate grocery list from planner
- */
+// =====================
+// GENERATE FROM PLANNER (SAFE)
+// =====================
 export function generateGroceryFromPlanner(planner) {
     let items = [];
 
     for (let day in planner) {
+        if (!planner[day]) continue;
+
         planner[day].forEach(meal => {
-            items.push(meal.title);
+            if (meal && meal.title) {
+                items.push(meal.title);
+            }
         });
     }
 

@@ -1,15 +1,25 @@
-import { getGrocery, clearGrocery, removeFromGrocery } from "./grocery.js";
+import {
+    getGrocery,
+    clearGrocery,
+    removeFromGrocery
+} from "./grocery.js";
 
 const list = document.getElementById("grocery-items");
 const clearBtn = document.getElementById("clear-grocery");
 
 // =====================
-// RENDER GROCERY LIST
+// RENDER LIST
 // =====================
 export function renderGrocery() {
-    const items = getGrocery();
+    if (!list) return;
 
+    const items = getGrocery();
     list.innerHTML = "";
+
+    if (items.length === 0) {
+        list.innerHTML = "<p>No items in grocery list</p>";
+        return;
+    }
 
     items.forEach((item, index) => {
         const li = document.createElement("li");
@@ -24,20 +34,26 @@ export function renderGrocery() {
 }
 
 // =====================
-// EVENTS
+// CLICK EVENTS
 // =====================
-list.addEventListener("click", (e) => {
-    if (e.target.classList.contains("remove-grocery")) {
-        const index = e.target.dataset.index;
+if (list) {
+    list.addEventListener("click", (e) => {
+        if (e.target.classList.contains("remove-grocery")) {
+            const index = e.target.dataset.index;
+            const items = getGrocery();
 
-        const items = getGrocery();
-        removeFromGrocery(items[index]);
+            removeFromGrocery(items[index]);
+            renderGrocery();
+        }
+    });
+}
 
+// =====================
+// CLEAR BUTTON
+// =====================
+if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+        clearGrocery();
         renderGrocery();
-    }
-});
-
-clearBtn.addEventListener("click", () => {
-    clearGrocery();
-    renderGrocery();
-});
+    });
+}
