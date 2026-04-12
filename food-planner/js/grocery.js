@@ -1,58 +1,28 @@
-import { loadGrocery, saveGrocery } from "./storage.js";
-
-let grocery = loadGrocery() || [];
+// =====================
+// STORAGE KEY
+// =====================
+const GROCERY_KEY = "grocery";
 
 // =====================
-// ADD ITEM
+// LOAD GROCERY
 // =====================
-export function addToGrocery(item) {
-    if (!item) return;
-
-    if (!grocery.includes(item)) {
-        grocery.push(item);
-        saveGrocery(grocery);
+export function loadGrocery() {
+    try {
+        const data = localStorage.getItem(GROCERY_KEY);
+        return data ? JSON.parse(data) : [];
+    } catch (error) {
+        console.error("Error loading grocery:", error);
+        return [];
     }
 }
 
 // =====================
-// GET LIST
+// SAVE GROCERY
 // =====================
-export function getGrocery() {
-    return grocery;
-}
-
-// =====================
-// REMOVE ITEM
-// =====================
-export function removeFromGrocery(item) {
-    grocery = grocery.filter(i => i !== item);
-    saveGrocery(grocery);
-}
-
-// =====================
-// CLEAR LIST
-// =====================
-export function clearGrocery() {
-    grocery = [];
-    saveGrocery(grocery);
-}
-
-// =====================
-// GENERATE FROM PLANNER (SAFE)
-// =====================
-export function generateGroceryFromPlanner(planner) {
-    let items = [];
-
-    for (let day in planner) {
-        if (!planner[day]) continue;
-
-        planner[day].forEach(meal => {
-            if (meal && meal.title) {
-                items.push(meal.title);
-            }
-        });
+export function saveGrocery(grocery) {
+    try {
+        localStorage.setItem(GROCERY_KEY, JSON.stringify(grocery));
+    } catch (error) {
+        console.error("Error saving grocery:", error);
     }
-
-    grocery = [...new Set(items)];
-    saveGrocery(grocery);
 }
