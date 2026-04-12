@@ -3,12 +3,12 @@ import { renderRecipes } from "./renderRecipes.js";
 import { renderPlannerUI } from "./plannerUI.js";
 import { getPlanner } from "./planner.js";
 
-import { exportToTrello } from "./planner.js";
+import { sendPlannerToTrello } from "./trello.js";
 import { generateGroceryFromPlanner } from "./grocery.js";
 import { renderGrocery } from "./groceryUI.js";
 
 // =====================
-// SAFE ELEMENT CHECKS
+// SAFE ELEMENTS
 // =====================
 const input = document.getElementById("recipe-search");
 const trelloBtn = document.getElementById("send-to-trello");
@@ -29,7 +29,7 @@ if (input) {
 }
 
 // =====================
-// INIT
+// INIT UI
 // =====================
 window.addEventListener("load", () => {
     renderPlannerUI();
@@ -37,22 +37,25 @@ window.addEventListener("load", () => {
 });
 
 // =====================
-// TRELLO SYNC (SAFE)
+// TRELLO BUTTON
 // =====================
 if (trelloBtn) {
     trelloBtn.addEventListener("click", async () => {
         try {
-            await exportToTrello();
-            alert("Planner synced successfully!");
+            const planner = getPlanner();
+            await sendPlannerToTrello(planner);
+            alert("✔ Sent to Trello");
         } catch (err) {
             console.error(err);
-            alert("Sync failed. Check console.");
+            alert("❌ Trello failed (check console)");
         }
     });
+} else {
+    console.warn("Trello button NOT found in HTML");
 }
 
 // =====================
-// GROCERY GENERATOR
+// GROCERY BUTTON
 // =====================
 if (groceryBtn) {
     groceryBtn.addEventListener("click", () => {
@@ -60,10 +63,12 @@ if (groceryBtn) {
             const planner = getPlanner();
             generateGroceryFromPlanner(planner);
             renderGrocery();
-            alert("Grocery list generated!");
+            alert("✔ Grocery generated");
         } catch (err) {
             console.error(err);
-            alert("Grocery generation failed.");
+            alert("❌ Grocery failed");
         }
     });
+} else {
+    console.warn("Grocery button NOT found in HTML");
 }
