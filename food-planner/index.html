@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Food & Grocery Planner</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Small internal styling for Trello button -->
+    <style>
+        .trello-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #0079bf;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.2s ease;
+        }
+
+        .trello-btn:hover {
+            background: #026aa7;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <h1>🥗 Smart Food & Grocery Planner</h1>
+
+        <input type="search" id="recipe-search" placeholder="Search recipes 🔍" autocomplete="off" />
+
+        <!-- Trello Button -->
+        <a href="https://trello.com/b/Sy5A78Fk" target="_blank" rel="noopener noreferrer" class="trello-btn">
+            📌 Open Trello Board
+        </a>
+    </header>
+
+    <!-- MAIN APP -->
+    <main class="container">
+
+        <!-- LEFT: Weekly Planner -->
+        <section id="weekly-planner" class="card">
+            <h2>📅 Weekly Planner</h2>
+
+            <div id="planner-grid"></div>
+        </section>
+
+        <!-- CENTER: Recipes -->
+        <section id="recipe-section" class="card">
+            <h2>🍽️ Recipes</h2>
+
+            <div id="recipe-results"></div>
+        </section>
+
+        <!-- RIGHT: Trello Section -->
+        <section class="card">
+            <h2>📌 Project Board</h2>
+
+            <p>
+                Click below to open your Trello board:
+            </p>
+
+            <a href="https://trello.com/b/Sy5A78Fk" target="_blank" rel="noopener noreferrer" class="trello-btn">
+                Open Trello Board
+            </a>
+        </section>
+
+    </main>
+
+</body>
+
+</html>
