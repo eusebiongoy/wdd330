@@ -10,17 +10,21 @@ body {
     color: #333;
 }
 
+/* ===================== */
 /* HEADER */
+/* ===================== */
 header {
     background: #4CAF50;
     color: white;
-    padding: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     text-align: center;
 }
 
 header h1 {
-    margin-bottom: 10px;
-    font-size: 24px;
+    font-size: 22px;
 }
 
 header input {
@@ -29,31 +33,63 @@ header input {
     border: none;
     border-radius: 8px;
     outline: none;
+    margin: 0 auto;
 }
 
-/* MAIN LAYOUT */
-.container {
+/* ===================== */
+/* DASHBOARD LAYOUT */
+/* ===================== */
+.dashboard {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr;
     gap: 15px;
     padding: 15px;
 }
 
-/* CARDS */
-.card {
+/* PANELS */
+.panel {
     background: white;
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    min-height: 400px;
+    min-height: 500px;
 }
 
-/* SECTION TITLES */
-.card h2 {
+.panel h2 {
     margin-bottom: 10px;
     font-size: 18px;
     border-bottom: 2px solid #eee;
     padding-bottom: 5px;
+}
+
+/* ===================== */
+/* ACTION BUTTONS */
+/* ===================== */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.orange {
+    background: #ff9800;
+}
+
+.blue {
+    background: #0079bf;
 }
 
 /* ===================== */
@@ -79,6 +115,7 @@ header input {
 }
 
 .recipe-card img {
+    width: 100%;
     border-radius: 8px;
     margin: 10px 0;
 }
@@ -88,6 +125,9 @@ header input {
     margin-bottom: 5px;
 }
 
+/* ===================== */
+/* BUTTONS */
+/* ===================== */
 button {
     background: #FF9800;
     border: none;
@@ -126,34 +166,33 @@ button:hover {
 }
 
 /* ===================== */
-/* PLANNER GRID */
+/* PLANNER */
 /* ===================== */
 #planner-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 8px;
     margin-top: 10px;
 }
 
 .day-box {
     background: #f1f1f1;
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     font-size: 12px;
+    min-height: 120px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .container {
-        grid-template-columns: 1fr;
-    }
-
-    header input {
-        width: 90%;
-    }
+.day-box h3 {
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: #4CAF50;
 }
 
+/* ===================== */
+/* MODAL */
+/* ===================== */
 .modal {
     position: fixed;
     top: 0;
@@ -186,68 +225,80 @@ button:hover {
     font-size: 20px;
 }
 
- /* ===================== */
- /* IMPROVED PLANNER UI */
- /* ===================== */
+/* ===================== */
+/* RESPONSIVE */
+/* ===================== */
+@media (max-width: 900px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
 
- #planner-grid {
-     display: grid;
-     grid-template-columns: repeat(7, 1fr);
-     gap: 10px;
-     margin-top: 15px;
- }
+    header input {
+        width: 90%;
+    }
 
- .day-box {
-     background: linear-gradient(145deg, #ffffff, #f0f0f0);
-     border-radius: 12px;
-     padding: 12px;
-     min-height: 140px;
-     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-     transition: transform 0.2s ease, box-shadow 0.2s ease;
- }
+    #planner-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 
- .day-box:hover {
-     transform: translateY(-3px);
-     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
- }
+/* ===== DRAG EFFECTS ===== */
+.meal-item {
+    background: #ffffff;
+    margin: 5px 0;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
+}
 
- .day-box h3 {
-     font-size: 14px;
-     margin-bottom: 8px;
-     color: #4CAF50;
-     border-bottom: 1px solid #ddd;
-     padding-bottom: 5px;
-     text-transform: uppercase;
-     letter-spacing: 1px;
- }
+.meal-item:hover {
+    background: #f0f0f0;
+}
 
- .meals {
-     font-size: 12px;
-     text-align: left;
- }
+.meal-item.dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+}
 
- .meals p {
-     background: #f9f9f9;
-     padding: 5px;
-     border-radius: 6px;
-     margin-bottom: 5px;
-     transition: 0.2s;
- }
+.day-box.drag-over {
+    background: #e3f2fd;
+    border: 2px dashed #2196f3;
+}
 
- .meals p:hover {
-     background: #ffe0b2;
- }
+/* REMOVE BUTTON */
+.remove {
+    cursor: pointer;
+    margin-left: 8px;
+    color: red;
+    font-size: 12px;
+}
 
- .trello-btn {
-     background: #0079bf;
-     color: white;
-     border: none;
-     padding: 10px 12px;
-     border-radius: 8px;
-     cursor: pointer;
-     transition: 0.2s;
- }
+/* EMPTY STATE */
+.empty {
+    font-size: 11px;
+    color: #999;
+}
 
- .trello-btn:hover {
-     background: #026aa7;
- }
+#grocery-items {
+    list-style: none;
+    padding: 0;
+}
+
+#grocery-items li {
+    background: #f9f9f9;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.remove-grocery {
+    cursor: pointer;
+    color: red;
+}

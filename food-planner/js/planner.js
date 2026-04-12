@@ -1,7 +1,6 @@
 import { savePlanner, loadPlanner } from "./storage.js";
 import { sendPlannerToTrello } from "./trello.js";
 
-// Load or create safe structure
 let planner = loadPlanner() || {
     monday: [],
     tuesday: [],
@@ -12,27 +11,50 @@ let planner = loadPlanner() || {
     sunday: []
 };
 
-// UI listeners
 const listeners = [];
+let syncTimeout = null;
 
+// =====================
+// SUBSCRIBE UI
+// =====================
 export function subscribe(callback) {
     listeners.push(callback);
 }
 
-// notify UI
 function notify() {
     listeners.forEach(fn => fn(planner));
 }
 
-// save + update UI
+// =====================
+// SAVE + SYNC (DEBOUNCED)
+// =====================
 function update() {
     savePlanner(planner);
     notify();
+
+    // 🔥 debounce Trello sync
+    if (syncTimeout) clearTimeout(syncTimeout);
+
+    syncTimeout = setTimeout(() => {
+        syncToTrello();
+    }, 2000); // wait 2 seconds after last change
 }
 
-/**
- * Add meal to planner
- */
+// =====================
+// SYNC FUNCTION
+// =====================
+async function syncToTrello() {
+    try {
+        await sendPlannerToTrello(planner);
+        console.log("Trello synced ✔");
+    } catch (err) {
+        console.error("Trello sync failed:", err);
+    }
+}
+
+// =====================
+// ADD MEAL
+// =====================
 export function addToPlanner(day, recipe) {
     if (!planner[day]) planner[day] = [];
 
@@ -43,9 +65,9 @@ export function addToPlanner(day, recipe) {
     update();
 }
 
-/**
- * Remove meal
- */
+// =====================
+// REMOVE MEAL
+// =====================
 export function removeFromPlanner(day, index) {
     if (planner[day]) {
         planner[day].splice(index, 1);
@@ -53,9 +75,9 @@ export function removeFromPlanner(day, index) {
     }
 }
 
-/**
- * Move meal (drag & drop)
- */
+// =====================
+// MOVE MEAL
+// =====================
 export function moveMeal(fromDay, toDay, index) {
     if (!planner[fromDay] || !planner[toDay]) return;
 
@@ -65,34 +87,9 @@ export function moveMeal(fromDay, toDay, index) {
     update();
 }
 
-/**
- * Get planner data
- */
+// =====================
+// GET DATA
+// =====================
 export function getPlanner() {
     return planner;
-}
-
-/**
- * CLEAR planner
- */
-export function clearPlanner() {
-    planner = {
-        monday: [],
-        tuesday: [],
-        wednesday: [],
-        thursday: [],
-        friday: [],
-        saturday: [],
-        sunday: []
-    };
-
-    update();
-}
-
-/**
- * SEND TO TRELLO (manual trigger button)
- */
-export async function exportToTrello() {
-    await sendPlannerToTrello(planner);
-    alert("Planner sent to Trello!");
 }

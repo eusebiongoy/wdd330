@@ -7,7 +7,9 @@ import {
 
 const container = document.getElementById("planner-grid");
 
-// RENDER UI
+// =====================
+// RENDER PLANNER
+// =====================
 export function renderPlannerUI() {
     render(getPlanner());
 }
@@ -18,9 +20,7 @@ function render(planner) {
 
     container.innerHTML = "";
 
-    const days = Object.keys(planner);
-
-    days.forEach(day => {
+    Object.keys(planner).forEach(day => {
         const box = document.createElement("div");
         box.classList.add("day-box");
 
@@ -31,25 +31,34 @@ function render(planner) {
             <div class="meals">
                 ${meals.length
                     ? meals.map((m, index) => `
-                        <p class="meal-item"
-                           draggable="true"
-                           data-day="${day}"
-                           data-index="${index}">
+                        <div class="meal-item"
+                             draggable="true"
+                             data-day="${day}"
+                             data-index="${index}">
                             🍽 ${m.title}
                             <span class="remove"
                                   data-day="${day}"
                                   data-index="${index}">❌</span>
-                        </p>
+                        </div>
                     `).join("")
-                    : "<p>No meals</p>"
+                    : "<p class='empty'>No meals</p>"
                 }
             </div>
         `;
 
-        // DRAG & DROP
-        box.addEventListener("dragover", e => e.preventDefault());
+        // DROP TARGET
+        box.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            box.classList.add("drag-over");
+        });
+
+        box.addEventListener("dragleave", () => {
+            box.classList.remove("drag-over");
+        });
 
         box.addEventListener("drop", (e) => {
+            box.classList.remove("drag-over");
+
             const fromDay = e.dataTransfer.getData("day");
             const index = e.dataTransfer.getData("index");
 
@@ -59,15 +68,23 @@ function render(planner) {
         container.appendChild(box);
     });
 
-    enableDrag();
+    enableDragAndRemove();
 }
 
-// ENABLE DRAG
-function enableDrag() {
+// =====================
+// DRAG HANDLING
+// =====================
+function enableDragAndRemove() {
     document.querySelectorAll(".meal-item").forEach(item => {
-        item.addEventListener("dragstart", e => {
+        item.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("day", item.dataset.day);
             e.dataTransfer.setData("index", item.dataset.index);
+
+            item.classList.add("dragging");
+        });
+
+        item.addEventListener("dragend", () => {
+            item.classList.remove("dragging");
         });
     });
 
@@ -79,5 +96,7 @@ function enableDrag() {
     });
 }
 
+// =====================
 // LIVE UPDATE
+// =====================
 subscribe(render);

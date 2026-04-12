@@ -1,15 +1,13 @@
 import { loadGrocery, saveGrocery } from "./storage.js";
 
-// Load or start empty list safely
 let grocery = loadGrocery() || [];
 
 /**
- * Add item to grocery list (no duplicates)
+ * Add item to grocery (no duplicates)
  */
 export function addToGrocery(item) {
     if (!item) return;
 
-    // prevent duplicates
     if (!grocery.includes(item)) {
         grocery.push(item);
         saveGrocery(grocery);
@@ -24,7 +22,7 @@ export function getGrocery() {
 }
 
 /**
- * Remove item from grocery list
+ * Remove item
  */
 export function removeFromGrocery(item) {
     grocery = grocery.filter(i => i !== item);
@@ -32,7 +30,7 @@ export function removeFromGrocery(item) {
 }
 
 /**
- * Clear entire grocery list
+ * Clear list
  */
 export function clearGrocery() {
     grocery = [];
@@ -40,11 +38,10 @@ export function clearGrocery() {
 }
 
 /**
- * Auto-generate grocery list from planner meals
- * (we will connect this in next step)
+ * Generate grocery list from planner
  */
-export function generateFromPlanner(planner) {
-    const items = [];
+export function generateGroceryFromPlanner(planner) {
+    let items = [];
 
     for (let day in planner) {
         planner[day].forEach(meal => {
@@ -52,7 +49,6 @@ export function generateFromPlanner(planner) {
         });
     }
 
-    // merge without duplicates
     grocery = [...new Set(items)];
     saveGrocery(grocery);
 }
