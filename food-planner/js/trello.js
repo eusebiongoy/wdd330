@@ -1,11 +1,10 @@
 import { loadTrelloMap, saveTrelloMap } from "./storage.js";
 
-const API_KEY = "YOUR_TRELLO_API_KEY";
-const TOKEN = "YOUR_TRELLO_TOKEN";
+const API_KEY = "YOUR_API_KEY";
+const TOKEN = "YOUR_TOKEN";
 const LIST_ID = "YOUR_LIST_ID";
 
-let trelloMap = loadTrelloMap(); 
-// format: { monday: cardId, tuesday: cardId ... }
+let trelloMap = loadTrelloMap();
 
 // =====================
 // CREATE CARD
@@ -44,29 +43,45 @@ async function updateCard(cardId, desc) {
 }
 
 // =====================
-// SMART SYNC
+// FORMAT PLANNER (CLEAN OUTPUT)
 // =====================
-export async function sendPlannerToTrello(planner) {
+function formatPlanner(planner) {
+    let text = "";
+
     for (let day in planner) {
         const meals = planner[day];
 
-        const description = meals.length
-            ? meals.map(m => `🍽 ${m.title}`).join("\n")
-            : "No meals planned";
+        text += `📅 ${day.toUpperCase()}\n`;
 
-        // IF CARD EXISTS → UPDATE
-        if (trelloMap[day]) {
-            await updateCard(trelloMap[day], description);
+        if (meals.length === 0) {
+            text += "- No meals planned\n\n";
+        } else {
+            meals.forEach(m => {
+                text += `- 🍽 ${m.title}\n`;
+            });
+            text += "\n";
         }
-        // ELSE → CREATE ONCE
-        else {
-            const card = await createCard(
-                `${day.toUpperCase()} Planner`,
-                description
-            );
+    }
 
-            trelloMap[day] = card.id;
-            saveTrelloMap(trelloMap);
-        }
+    return text;
+}
+
+// =====================
+// SYNC TO TRELLO
+// =====================
+export async function sendPlannerToTrello(planner) {
+    const content = formatPlanner(planner);
+
+    // ONE CLEAN CARD INSTEAD OF MANY
+    if (trelloMap["weekly"]) {
+        await updateCard(trelloMap["weekly"], content);
+    } else {
+        const card = await createCard(
+            "📊 Weekly Meal Planner",
+            content
+        );
+
+        trelloMap["weekly"] = card.id;
+        saveTrelloMap(trelloMap);
     }
 }
