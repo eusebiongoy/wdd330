@@ -8,10 +8,15 @@ import { generateGroceryFromPlanner } from "./grocery.js";
 import { renderGrocery } from "./groceryUI.js";
 
 // =====================
-// RECIPE SEARCH
+// SAFE ELEMENT CHECKS
 // =====================
 const input = document.getElementById("recipe-search");
+const trelloBtn = document.getElementById("send-to-trello");
+const groceryBtn = document.getElementById("generate-grocery");
 
+// =====================
+// SEARCH
+// =====================
 if (input) {
     input.addEventListener("input", async (e) => {
         const query = e.target.value;
@@ -24,7 +29,7 @@ if (input) {
 }
 
 // =====================
-// INIT APP
+// INIT
 // =====================
 window.addEventListener("load", () => {
     renderPlannerUI();
@@ -32,28 +37,33 @@ window.addEventListener("load", () => {
 });
 
 // =====================
-// TRELLO SYNC BUTTON
+// TRELLO SYNC (SAFE)
 // =====================
-const trelloBtn = document.getElementById("send-to-trello");
-
 if (trelloBtn) {
     trelloBtn.addEventListener("click", async () => {
-        await exportToTrello();
-        alert("Planner sent to Trello!");
+        try {
+            await exportToTrello();
+            alert("Planner synced successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Sync failed. Check console.");
+        }
     });
 }
 
 // =====================
-// GROCERY GENERATOR BUTTON
+// GROCERY GENERATOR
 // =====================
-const groceryBtn = document.getElementById("generate-grocery");
-
 if (groceryBtn) {
     groceryBtn.addEventListener("click", () => {
-        const planner = getPlanner();
-        generateGroceryFromPlanner(planner);
-
-        renderGrocery(); // 🔥 update UI instantly
-        alert("Grocery list generated!");
+        try {
+            const planner = getPlanner();
+            generateGroceryFromPlanner(planner);
+            renderGrocery();
+            alert("Grocery list generated!");
+        } catch (err) {
+            console.error(err);
+            alert("Grocery generation failed.");
+        }
     });
 }
