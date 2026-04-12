@@ -1,17 +1,15 @@
-// =====================
-// STORAGE KEY
-// =====================
-const GROCERY_KEY = "grocery";
+const STORAGE_KEY = "grocery";
 
 // =====================
 // LOAD GROCERY
 // =====================
 export function loadGrocery() {
+    const data = localStorage.getItem(STORAGE_KEY);
+
     try {
-        const data = localStorage.getItem(GROCERY_KEY);
         return data ? JSON.parse(data) : [];
     } catch (error) {
-        console.error("Error loading grocery:", error);
+        console.error("Failed to load grocery:", error);
         return [];
     }
 }
@@ -21,8 +19,8 @@ export function loadGrocery() {
 // =====================
 export function saveGrocery(grocery) {
     try {
-        localStorage.setItem(GROCERY_KEY, JSON.stringify(grocery));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(grocery));
     } catch (error) {
-        console.error("Error saving grocery:", error);
+        console.error("Failed to save grocery:", error);
     }
 }
