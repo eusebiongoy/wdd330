@@ -1,15 +1,46 @@
+const DEFAULT_KEY = "guest_planner";
+
+/**
+ * Get current logged-in user key
+ */
+function getUserKey() {
+    return localStorage.getItem("user") || DEFAULT_KEY;
+}
+
+/**
+ * Save planner per user
+ */
 export function savePlanner(data) {
-    localStorage.setItem("planner", JSON.stringify(data));
+    const key = getUserKey();
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
+/**
+ * Load planner per user
+ */
 export function loadPlanner() {
-    return JSON.parse(localStorage.getItem("planner")) || {};
+    const key = getUserKey();
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
 }
 
-export function saveGrocery(data) {
-    localStorage.setItem("grocery", JSON.stringify(data));
+/**
+ * Login user
+ */
+export function loginUser(username) {
+    localStorage.setItem("user", username);
 }
 
-export function loadGrocery() {
-    return JSON.parse(localStorage.getItem("grocery")) || [];
+/**
+ * Logout user
+ */
+export function logoutUser() {
+    localStorage.removeItem("user");
+}
+
+/**
+ * Get current user
+ */
+export function getCurrentUser() {
+    return localStorage.getItem("user") || null;
 }

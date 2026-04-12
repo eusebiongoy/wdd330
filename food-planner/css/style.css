@@ -185,3 +185,69 @@ button:hover {
     cursor: pointer;
     font-size: 20px;
 }
+
+ /* ===================== */
+ /* IMPROVED PLANNER UI */
+ /* ===================== */
+
+ #planner-grid {
+     display: grid;
+     grid-template-columns: repeat(7, 1fr);
+     gap: 10px;
+     margin-top: 15px;
+ }
+
+ .day-box {
+     background: linear-gradient(145deg, #ffffff, #f0f0f0);
+     border-radius: 12px;
+     padding: 12px;
+     min-height: 140px;
+     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+     transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+
+ .day-box:hover {
+     transform: translateY(-3px);
+     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+ }
+
+ .day-box h3 {
+     font-size: 14px;
+     margin-bottom: 8px;
+     color: #4CAF50;
+     border-bottom: 1px solid #ddd;
+     padding-bottom: 5px;
+     text-transform: uppercase;
+     letter-spacing: 1px;
+ }
+
+ .meals {
+     font-size: 12px;
+     text-align: left;
+ }
+
+ .meals p {
+     background: #f9f9f9;
+     padding: 5px;
+     border-radius: 6px;
+     margin-bottom: 5px;
+     transition: 0.2s;
+ }
+
+ .meals p:hover {
+     background: #ffe0b2;
+ }
+
+ .trello-btn {
+     background: #0079bf;
+     color: white;
+     border: none;
+     padding: 10px 12px;
+     border-radius: 8px;
+     cursor: pointer;
+     transition: 0.2s;
+ }
+
+ .trello-btn:hover {
+     background: #026aa7;
+ }
