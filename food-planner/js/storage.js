@@ -1,15 +1,29 @@
+const DEFAULT_KEY = "guest_planner";
+
+function getUserKey() {
+    return localStorage.getItem("user") || DEFAULT_KEY;
+}
+
+// =====================
+// PLANNER STORAGE
+// =====================
 export function savePlanner(data) {
-    localStorage.setItem("planner", JSON.stringify(data));
+    const key = getUserKey();
+    localStorage.setItem(key, JSON.stringify(data));
 }
 
 export function loadPlanner() {
-    return JSON.parse(localStorage.getItem("planner")) || {};
+    const key = getUserKey();
+    return JSON.parse(localStorage.getItem(key));
 }
 
-export function saveGrocery(data) {
-    localStorage.setItem("grocery", JSON.stringify(data));
+// =====================
+// TRELLO CARD STORAGE
+// =====================
+export function saveTrelloMap(map) {
+    localStorage.setItem("trello_map", JSON.stringify(map));
 }
 
-export function loadGrocery() {
-    return JSON.parse(localStorage.getItem("grocery")) || [];
+export function loadTrelloMap() {
+    return JSON.parse(localStorage.getItem("trello_map")) || {};
 }
