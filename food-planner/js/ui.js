@@ -14,13 +14,25 @@ export function displayRecipes(recipes) {
         const div = document.createElement("div");
         div.classList.add("card");
 
+        // ✅ IMPORTANT: enable drag
+        div.setAttribute("draggable", "true");
+
         div.innerHTML = `
             <img src="${meal.strMealThumb}" class="recipe-img">
             <h3>${meal.strMeal}</h3>
             <button class="add-btn">Add to Planner</button>
         `;
 
-        // ADD TO PLANNER
+        // 🟡 DRAG START (FIXED)
+        div.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("recipe", JSON.stringify({
+                id: meal.idMeal,
+                title: meal.strMeal,
+                image: meal.strMealThumb
+            }));
+        });
+
+        // ➕ Add to planner (manual)
         div.querySelector(".add-btn").addEventListener("click", () => {
             const day = prompt("Enter day (Mon-Sun)");
             if (!day) return;
@@ -38,7 +50,7 @@ export function displayRecipes(recipes) {
     });
 }
 
-/* 📅 PLANNER */
+/* 📅 PLANNER (DRAG FIXED HERE) */
 export function displayPlanner() {
     const container = document.getElementById("planner");
     const planner = getPlanner();
@@ -69,11 +81,20 @@ export function displayPlanner() {
 
         const dropZone = div.querySelector(".drop-zone");
 
-        dropZone.addEventListener("dragover", e => e.preventDefault());
+        // 🟢 ALLOW DRAG OVER
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+        });
 
+        // 🟢 DROP FIXED
         dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+
             const recipe = JSON.parse(e.dataTransfer.getData("recipe"));
+
             addToPlanner(day, recipe);
+
+            // 🔥 refresh UI instantly
             displayPlanner();
         });
 
@@ -81,7 +102,7 @@ export function displayPlanner() {
     });
 }
 
-/* 🛒 GROCERY */
+/* 🛒 GROCERY (UNCHANGED BUT SAFE) */
 export function displayGrocery() {
     const container = document.getElementById("grocery");
     let items = getItems();
