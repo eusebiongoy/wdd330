@@ -1,7 +1,10 @@
-import { addToPlanner } from './planner.js';
+import { addToPlanner, getPlanner } from './planner.js';
 import { getRecipeDetails } from './api.js';
 import { addIngredients, getItems } from './grocery.js';
 
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+// 🟢 RECIPES
 export function displayRecipes(recipes) {
     const container = document.getElementById("recipes");
     container.innerHTML = "<h2>🍲 Recipes</h2>";
@@ -17,18 +20,14 @@ export function displayRecipes(recipes) {
         `;
 
         div.querySelector(".add-btn").addEventListener("click", async () => {
-            const day = prompt("Enter day (Mon, Tue, Wed...)");
+            const day = prompt("Enter day (Mon-Sun)");
 
-            // Add to planner
             addToPlanner(day, recipe);
 
-            // Get ingredients from API
             const details = await getRecipeDetails(recipe.id);
-
-            // Add ingredients to grocery list
             addIngredients(details.extendedIngredients);
 
-            alert("✅ Added to planner + grocery list!");
+            displayPlanner();
             displayGrocery();
         });
 
@@ -36,15 +35,61 @@ export function displayRecipes(recipes) {
     });
 }
 
+// 🟢 PLANNER (NEW)
+export function displayPlanner() {
+    const container = document.getElementById("planner");
+    const planner = getPlanner();
+
+    container.innerHTML = "<h2>📅 Weekly Planner</h2>";
+
+    days.forEach(day => {
+        const div = document.createElement("div");
+        div.classList.add("card");
+
+        div.innerHTML = `
+            <h3>${day}</h3>
+            <p>${planner[day]?.title || "No meal planned"}</p>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// 🟢 GROCERY
 export function displayGrocery() {
     const container = document.getElementById("grocery");
     const items = getItems();
 
-    container.innerHTML = "<h2>🛒 Grocery List</h2>";
+    container.innerHTML = `
+        <h2>🛒 Grocery List</h2>
+        <button id="addItemBtn">+ Add Item</button>
+    `;
 
-    items.forEach(item => {
-        const p = document.createElement("p");
-        p.textContent = "✔ " + item;
-        container.appendChild(p);
+    // ADD ITEM BUTTON
+    document.getElementById("addItemBtn").addEventListener("click", () => {
+        const item = prompt("Enter item name");
+        if (item) {
+            items.push(item);
+            localStorage.setItem("grocery", JSON.stringify(items));
+            displayGrocery();
+        }
+    });
+
+    items.forEach((item, index) => {
+        const div = document.createElement("div");
+
+        div.innerHTML = `
+            ${item}
+            <button data-index="${index}">❌</button>
+        `;
+
+        // REMOVE BUTTON
+        div.querySelector("button").addEventListener("click", () => {
+            items.splice(index, 1);
+            localStorage.setItem("grocery", JSON.stringify(items));
+            displayGrocery();
+        });
+
+        container.appendChild(div);
     });
 }
