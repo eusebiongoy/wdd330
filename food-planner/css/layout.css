@@ -1,0 +1,12 @@
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+section {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}

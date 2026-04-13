@@ -1,10 +1,8 @@
-const API_KEY = "YOUR_API_KEY";
+import { CONFIG } from '../config/config.js';
 
 export async function searchRecipes(query) {
-    const res = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?query=${query}&number=6&apiKey=${API_KEY}`
-    );
+    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${query}&apiKey=${CONFIG.API_KEY}`;
 
-    const data = await res.json();
-    return data.results || [];
+    const response = await fetch(url);
+    return response.json();
 }

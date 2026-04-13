@@ -6,48 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Food Planner</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/animations.css">
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <header class="header">
-        <h1>🥗 Smart Food Planner</h1>
-
-        <input type="search" id="recipe-search" placeholder="Search recipes..." />
-
-        <div class="actions">
-            <button id="generate-grocery" class="btn orange">🛒 Grocery</button>
-            <button id="send-to-trello" class="btn blue">📌 Trello</button>
-        </div>
+    <header>
+        <h1>🍽 Smart Food Planner</h1>
+        <input type="text" id="searchInput" placeholder="Search recipes...">
+        <button id="searchBtn">Search</button>
     </header>
 
-    <!-- DASHBOARD -->
-    <main class="dashboard">
-
-        <!-- LEFT: RECIPES -->
-        <section class="panel">
-            <h2>🍽 Recipes</h2>
-            <div id="recipe-results"></div>
-        </section>
-
-        <!-- CENTER: PLANNER -->
-        <section class="panel large">
-            <h2>📅 Weekly Planner</h2>
-            <div id="planner-grid"></div>
-        </section>
-
-        <section class="panel" id="grocery-panel">
-            <h2>🛒 Grocery List</h2>
-            <ul id="grocery-items"></ul>
-            <button id="clear-grocery" class="btn orange">Clear List</button>
-        </section>
-
+    <main>
+        <section id="planner"></section>
+        <section id="recipes"></section>
+        <section id="grocery"></section>
     </main>
 
     <script type="module" src="js/app.js"></script>
-
 </body>
 
 </html>
