@@ -1,5 +1,4 @@
 import { addToPlanner, getPlanner } from './planner.js';
-import { getRecipeDetails } from './api.js';
 import { getItems } from './grocery.js';
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -14,8 +13,8 @@ export function displayRecipes(recipes) {
         const div = document.createElement("div");
         div.classList.add("card");
 
-        // ✅ IMPORTANT: enable drag
-        div.setAttribute("draggable", "true");
+        // ✅ DRAG ENABLED
+        div.draggable = true;
 
         div.innerHTML = `
             <img src="${meal.strMealThumb}" class="recipe-img">
@@ -23,13 +22,15 @@ export function displayRecipes(recipes) {
             <button class="add-btn">Add to Planner</button>
         `;
 
-        // 🟡 DRAG START (FIXED)
+        // 🟢 DRAG START (FIXED)
         div.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("recipe", JSON.stringify({
                 id: meal.idMeal,
                 title: meal.strMeal,
                 image: meal.strMealThumb
             }));
+
+            e.dataTransfer.effectAllowed = "move";
         });
 
         // ➕ Add to planner (manual)
@@ -50,7 +51,7 @@ export function displayRecipes(recipes) {
     });
 }
 
-/* 📅 PLANNER (DRAG FIXED HERE) */
+/* 📅 PLANNER */
 export function displayPlanner() {
     const container = document.getElementById("planner");
     const planner = getPlanner();
@@ -69,7 +70,7 @@ export function displayPlanner() {
                 ${
                     meal
                         ? `
-                        <div class="meal">
+                        <div class="meal" onclick="replaceMeal('${day}')">
                             <img src="${meal.image}" class="planner-img">
                             <p>${meal.title}</p>
                         </div>
@@ -81,7 +82,7 @@ export function displayPlanner() {
 
         const dropZone = div.querySelector(".drop-zone");
 
-        // 🟢 ALLOW DRAG OVER
+        // 🟢 DRAG OVER
         dropZone.addEventListener("dragover", (e) => {
             e.preventDefault();
         });
@@ -90,11 +91,13 @@ export function displayPlanner() {
         dropZone.addEventListener("drop", (e) => {
             e.preventDefault();
 
-            const recipe = JSON.parse(e.dataTransfer.getData("recipe"));
+            const data = e.dataTransfer.getData("recipe");
+            if (!data) return;
+
+            const recipe = JSON.parse(data);
 
             addToPlanner(day, recipe);
 
-            // 🔥 refresh UI instantly
             displayPlanner();
         });
 
@@ -102,7 +105,22 @@ export function displayPlanner() {
     });
 }
 
-/* 🛒 GROCERY (UNCHANGED BUT SAFE) */
+/* 🟢 REPLACE / CHANGE MEAL */
+window.replaceMeal = function(day) {
+    const newName = prompt("Enter new meal name:");
+
+    if (!newName) return;
+
+    addToPlanner(day, {
+        id: Date.now(),
+        title: newName,
+        image: "https://via.placeholder.com/300x200?text=Meal"
+    });
+
+    displayPlanner();
+};
+
+/* 🛒 GROCERY (UNCHANGED) */
 export function displayGrocery() {
     const container = document.getElementById("grocery");
     let items = getItems();
