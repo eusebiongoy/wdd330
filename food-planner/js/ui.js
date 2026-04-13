@@ -4,7 +4,7 @@ import { getItems } from './grocery.js';
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// 🍲 DISPLAY RECIPES
+// 🍲 RECIPES
 export function displayRecipes(recipes) {
     const container = document.getElementById("recipes");
     container.innerHTML = "<h2>🍲 Recipes</h2>";
@@ -20,19 +20,19 @@ export function displayRecipes(recipes) {
             <button class="add-btn">Add to Planner</button>
         `;
 
-        // DRAG START
+        // DRAG
         div.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("recipe", JSON.stringify(recipe));
         });
 
-        // BUTTON CLICK
+        // ADD BUTTON
         div.querySelector(".add-btn").addEventListener("click", () => {
             const day = prompt("Enter day (Mon-Sun)");
             addToPlanner(day, recipe);
             displayPlanner();
         });
 
-        // MODAL CLICK
+        // MODAL
         div.addEventListener("click", async (e) => {
             if (e.target.tagName === "BUTTON") return;
 
@@ -57,7 +57,7 @@ export function displayRecipes(recipes) {
     });
 }
 
-// 📅 DISPLAY PLANNER
+// 📅 PLANNER WITH IMAGES
 export function displayPlanner() {
     const container = document.getElementById("planner");
     const planner = getPlanner();
@@ -65,22 +65,31 @@ export function displayPlanner() {
     container.innerHTML = "<h2>📅 Weekly Planner</h2>";
 
     days.forEach(day => {
+        const meal = planner[day];
+
         const div = document.createElement("div");
-        div.classList.add("card");
+        div.classList.add("planner-card");
 
         div.innerHTML = `
             <h3>${day}</h3>
             <div class="drop-zone">
-                ${planner[day] ? `<div class="meal">${planner[day].title}</div>` : "Drop meal here"}
+                ${
+                    meal
+                        ? `
+                        <div class="meal">
+                            <img src="${meal.image}" class="planner-img">
+                            <p>${meal.title}</p>
+                        </div>
+                        `
+                        : "Drop meal here"
+                }
             </div>
         `;
 
         const dropZone = div.querySelector(".drop-zone");
 
-        // ALLOW DROP
         dropZone.addEventListener("dragover", e => e.preventDefault());
 
-        // DROP EVENT
         dropZone.addEventListener("drop", (e) => {
             const recipe = JSON.parse(e.dataTransfer.getData("recipe"));
             addToPlanner(day, recipe);
@@ -91,7 +100,7 @@ export function displayPlanner() {
     });
 }
 
-// 🛒 DISPLAY GROCERY
+// 🛒 GROCERY
 export function displayGrocery() {
     const container = document.getElementById("grocery");
     let items = getItems();
@@ -101,7 +110,6 @@ export function displayGrocery() {
         <button id="addItemBtn">+ Add Item</button>
     `;
 
-    // ADD ITEM
     document.getElementById("addItemBtn").addEventListener("click", () => {
         const item = prompt("Enter item");
         if (item) {
@@ -113,23 +121,22 @@ export function displayGrocery() {
 
     items.forEach((item, index) => {
         const div = document.createElement("div");
+        div.classList.add("grocery-item");
 
         div.innerHTML = `
             <input type="checkbox" ${item.checked ? "checked" : ""}>
-            <span style="${item.checked ? "text-decoration: line-through" : ""}">
+            <span class="${item.checked ? "checked" : ""}">
                 ${item.name}
             </span>
             <button>❌</button>
         `;
 
-        // CHECK
         div.querySelector("input").addEventListener("change", () => {
             items[index].checked = !items[index].checked;
             localStorage.setItem("grocery", JSON.stringify(items));
             displayGrocery();
         });
 
-        // DELETE
         div.querySelector("button").addEventListener("click", () => {
             items.splice(index, 1);
             localStorage.setItem("grocery", JSON.stringify(items));
