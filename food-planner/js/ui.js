@@ -13,7 +13,6 @@ export function displayRecipes(recipes) {
         const div = document.createElement("div");
         div.classList.add("card");
 
-        // ✅ DRAG ENABLED
         div.draggable = true;
 
         div.innerHTML = `
@@ -22,18 +21,16 @@ export function displayRecipes(recipes) {
             <button class="add-btn">Add to Planner</button>
         `;
 
-        // 🟢 DRAG START (FIXED)
+        // 🟢 DRAG START
         div.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("recipe", JSON.stringify({
                 id: meal.idMeal,
                 title: meal.strMeal,
                 image: meal.strMealThumb
             }));
-
-            e.dataTransfer.effectAllowed = "move";
         });
 
-        // ➕ Add to planner (manual)
+        // ➕ ADD BUTTON
         div.querySelector(".add-btn").addEventListener("click", () => {
             const day = prompt("Enter day (Mon-Sun)");
             if (!day) return;
@@ -66,13 +63,17 @@ export function displayPlanner() {
 
         div.innerHTML = `
             <h3>${day}</h3>
+
             <div class="drop-zone">
                 ${
                     meal
                         ? `
-                        <div class="meal" onclick="replaceMeal('${day}')">
+                        <div class="meal">
                             <img src="${meal.image}" class="planner-img">
                             <p>${meal.title}</p>
+
+                            <!-- 🟢 DELETE BUTTON -->
+                            <button class="delete-btn">Delete</button>
                         </div>
                         `
                         : "Drop meal here"
@@ -87,7 +88,7 @@ export function displayPlanner() {
             e.preventDefault();
         });
 
-        // 🟢 DROP FIXED
+        // 🟢 DROP
         dropZone.addEventListener("drop", (e) => {
             e.preventDefault();
 
@@ -101,11 +102,25 @@ export function displayPlanner() {
             displayPlanner();
         });
 
+        // 🟢 DELETE MEAL
+        const deleteBtn = div.querySelector(".delete-btn");
+
+        if (deleteBtn) {
+            deleteBtn.addEventListener("click", () => {
+                const plannerData = getPlanner();
+                delete plannerData[day];
+
+                localStorage.setItem("planner", JSON.stringify(plannerData));
+
+                displayPlanner();
+            });
+        }
+
         container.appendChild(div);
     });
 }
 
-/* 🟢 REPLACE / CHANGE MEAL */
+/* 🟢 REPLACE MEAL */
 window.replaceMeal = function(day) {
     const newName = prompt("Enter new meal name:");
 
