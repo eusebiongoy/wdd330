@@ -6,56 +6,49 @@ body {
     background: #000;
 }
 
-/* 🌄 BASE HERO BACKGROUND */
+/* 🌄 HERO BACKGROUND */
 body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
 
     background-image: url("https://images.unsplash.com/photo-1498837167922-ddd27525d352");
     background-size: cover;
     background-position: center;
 
-    filter: brightness(0.5);
-    z-index: -3;
+    filter: brightness(0.45);
+    z-index: -2;
 }
 
-/* 🍕 FLOATING FOOD ANIMATION LAYER */
+/* 🍕 FIXED ANIMATED FOOD BACKGROUND (WORKING VERSION) */
 body::after {
-    content: "";
+    content: "🍕 🍔 🍟 🥗 🍓 🍎 🍞 🥑 🍩 🍗 🍰 🍪 🍉 🍜";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
+    inset: 0;
 
-    background-image:
-        url("https://cdn-icons-png.flaticon.com/512/1404/1404945.png"),
-        url("https://cdn-icons-png.flaticon.com/512/1046/1046784.png"),
-        url("https://cdn-icons-png.flaticon.com/512/135/135620.png"),
-        url("https://cdn-icons-png.flaticon.com/512/1046/1046857.png");
-
-    background-size: 80px 80px;
-    background-repeat: repeat;
-
+    font-size: 40px;
     opacity: 0.08;
 
-    animation: floatFood 60s linear infinite;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
 
-    z-index: -2;
+    animation: floatFood 20s linear infinite;
+
+    z-index: -1;
+
+    pointer-events: none;
 }
 
 /* 🎞 ANIMATION */
 @keyframes floatFood {
     0% {
-        transform: translate(0, 0);
+        transform: translateY(0px);
     }
 
     100% {
-        transform: translate(-200px, -200px);
+        transform: translateY(-120px);
     }
 }
 
@@ -152,8 +145,7 @@ button {
 /* 🪟 MODAL */
 .modal {
     position: fixed;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.5);
 }
 
