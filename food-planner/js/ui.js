@@ -4,60 +4,41 @@ import { getItems } from './grocery.js';
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-// 🍲 RECIPES
+/* 🍲 RECIPES */
 export function displayRecipes(recipes) {
     const container = document.getElementById("recipes");
+
     container.innerHTML = "<h2>🍲 Recipes</h2>";
 
-    recipes.forEach(recipe => {
+    recipes.forEach(meal => {
         const div = document.createElement("div");
         div.classList.add("card");
-        div.setAttribute("draggable", true);
 
         div.innerHTML = `
-            <img src="${recipe.image}" class="recipe-img">
-            <h3>${recipe.title}</h3>
+            <img src="${meal.strMealThumb}" class="recipe-img">
+            <h3>${meal.strMeal}</h3>
             <button class="add-btn">Add to Planner</button>
         `;
 
-        // DRAG
-        div.addEventListener("dragstart", (e) => {
-            e.dataTransfer.setData("recipe", JSON.stringify(recipe));
-        });
-
-        // ADD BUTTON
+        // ADD TO PLANNER
         div.querySelector(".add-btn").addEventListener("click", () => {
             const day = prompt("Enter day (Mon-Sun)");
-            addToPlanner(day, recipe);
+            if (!day) return;
+
+            addToPlanner(day, {
+                id: meal.idMeal,
+                title: meal.strMeal,
+                image: meal.strMealThumb
+            });
+
             displayPlanner();
-        });
-
-        // MODAL
-        div.addEventListener("click", async (e) => {
-            if (e.target.tagName === "BUTTON") return;
-
-            const modal = document.getElementById("modal");
-            const modalBody = document.getElementById("modalBody");
-
-            const details = await getRecipeDetails(recipe.id);
-
-            modalBody.innerHTML = `
-                <h2>${recipe.title}</h2>
-                <img src="${recipe.image}" width="100%">
-                <h3>Ingredients:</h3>
-                <ul>
-                    ${details.extendedIngredients.map(i => `<li>${i.name}</li>`).join("")}
-                </ul>
-            `;
-
-            modal.classList.remove("hidden");
         });
 
         container.appendChild(div);
     });
 }
 
-// 📅 PLANNER WITH IMAGES
+/* 📅 PLANNER */
 export function displayPlanner() {
     const container = document.getElementById("planner");
     const planner = getPlanner();
@@ -100,7 +81,7 @@ export function displayPlanner() {
     });
 }
 
-// 🛒 GROCERY
+/* 🛒 GROCERY */
 export function displayGrocery() {
     const container = document.getElementById("grocery");
     let items = getItems();

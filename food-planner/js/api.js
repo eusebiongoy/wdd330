@@ -1,17 +1,19 @@
-import { CONFIG } from '../config/config.js';
-
-// Search recipes
 export async function searchRecipes(query) {
-    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${query}&apiKey=${CONFIG.API_KEY}`;
+    const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
 
     const response = await fetch(url);
-    return response.json();
+    const data = await response.json();
+
+    return {
+        results: data.meals || []
+    };
 }
 
-// Get recipe details (ingredients)
 export async function getRecipeDetails(id) {
-    const url = `https://api.spoonacular.com/recipes/${id}/information?apiKey=${CONFIG.API_KEY}`;
+    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
 
     const response = await fetch(url);
-    return response.json();
+    const data = await response.json();
+
+    return data.meals ? data.meals[0] : null;
 }
