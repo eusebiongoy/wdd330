@@ -1,12 +1,17 @@
 import { searchRecipes } from './api.js';
-import { displayRecipes } from './ui.js';
-import { loadData } from './storage.js';
+import { displayRecipes, displayGrocery } from './ui.js';
 
 document.getElementById("searchBtn").addEventListener("click", async () => {
     const query = document.getElementById("searchInput").value;
+
+    if (!query) {
+        alert("Please enter a search term");
+        return;
+    }
 
     const data = await searchRecipes(query);
     displayRecipes(data.results);
 });
 
-loadData();
+// Load grocery list on start
+displayGrocery();
